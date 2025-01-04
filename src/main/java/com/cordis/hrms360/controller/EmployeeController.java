@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -28,10 +29,33 @@ public class EmployeeController {
 
     @PostMapping("/addEmployee") //localhost:8080/employee/addEmployee
     public ResponseEntity<Employee> postEmployee(@RequestBody CreateEmployeeReq createEmployeeReq) {
-        log.info("Employee Request : {}",createEmployeeReq.toString());
+        log.info("Create Employee Request : {}", createEmployeeReq.toString());
         Employee employee = employeeService.create(createEmployeeReq);
         return new ResponseEntity<>(employee, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        Optional<Employee> employee = employeeService.getEmployeeById(id);
+
+        if (employee.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(employee.get(), HttpStatus.OK);
+        }
+
+
+        /*return employeeService.getEmployeeById(id)
+                .map(employee -> ResponseEntity.ok().body(employee))
+                .orElse(ResponseEntity.notFound().build());*/
+    }
+
+/*    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+        log.info("Update Employee Request : {}", updatedEmployee.toString());
+        Employee employee = employeeService.update(id, updatedEmployee);
+        return new ResponseEntity<>(employee, HttpStatus.CREATED);
+    }*/
 
     @DeleteMapping("/deleteEmployee") //localhost:8080/employee/deleteEmployee
     public String deleteEmployee() {

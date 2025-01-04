@@ -6,10 +6,11 @@ import com.cordis.hrms360.model.CreateEmployeeReq;
 import com.cordis.hrms360.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -36,6 +37,10 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
     //this method is for mapping input address to address in employee request
     private void buildAddress(Employee employee, CreateEmployeeReq createEmployeeReq) {
         //List<Address> addressList = new ArrayList<>();
@@ -52,4 +57,18 @@ public class EmployeeService {
         });
         //employee.setAddresses(addressList);
     }
+
+/*    public Employee update(Long id, Employee employeeDetails) {
+        return employeeRepository.findById(id)
+                .map(employee -> {
+                    employee.setFirstName(employeeDetails.getFirstName());
+                    employee.setLastName(employeeDetails.getLastName());
+                    employee.setEmail(employeeDetails.getEmail());
+                    employee.setDepartment(employeeDetails.getDepartment());
+                    employee.setAddresses(employeeDetails.getAddresses());
+                    Employee updatedEmployee = employeeService.saveEmployee(employee);
+                    return ResponseEntity.ok(updatedEmployee);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }*/
 }
